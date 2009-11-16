@@ -1,6 +1,12 @@
 = Dreamcatch
 
 A Ruby Gem to create new git repositories on dreamhost using WebDav
+
+    
+    Dreamcatch::Config.remote_url = "repo.example.com/git"
+    Dreamcatch::Config.username = "username"
+    Dreamcatch::Config.password = "password"
+    
     
     repo = Dreamcatch::Repo.new(
       :dir  => "~/some/dir",
