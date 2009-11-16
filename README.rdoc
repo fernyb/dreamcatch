@@ -1,7 +1,28 @@
 = dreamcatch
 
 A Ruby Gem to create new git repositories on dreamhost using WebDav
+    
+    repo = Dreamcatch::Repo.new(
+      :dir  => "~/some/dir",
+      :name => "repo.git"
+    )
+    repo.save # => returns true when save success
 
+
+    repo = Dreamcatch::Repo.new(
+      :dir  => "~/some/dir",
+      :name => "repo.git"
+    )
+    repo.delete # => returns true when delete is success
+
+
+    repo = Dreamcatch::Repo.new(
+      :dir  => "~/some/dir",
+      :name => "repo.git"
+    )
+    repo.rename("new-name.git") # => returns true when rename was success
+            
+    
 == Note on Patches/Pull Requests
  
 * Fork the project.
