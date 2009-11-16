@@ -26,11 +26,11 @@ A Ruby Gem to create new git repositories on dreamhost using WebDav
 
 == Gem Dependencies
 
-* fernyb_davclient must be used and not davclient
+* *fernyb_davclient* must be used and not davclient
     
     sudo gem install fernyb_davclient
     
-* grit must also be available
+* *grit* must also be available
     
     sudo gem install grit
 
