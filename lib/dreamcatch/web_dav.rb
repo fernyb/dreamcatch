@@ -7,7 +7,7 @@ module Dreamcatch
     end
     
     def webdav
-      WebDAV
+      Dreamcatch::DAV
     end
     
     def exists?(save_name)
@@ -20,7 +20,7 @@ module Dreamcatch
     
     def rename(name, new_name)
       if !webdav.exists?("#{remote_url}/#{new_name}")
-        webdav.mv("#{remote_url}/#{name}", "#{remote_url}/#{new_name}")
+        webdav.rename("#{remote_url}/#{name}", "#{remote_url}/#{new_name}")
       end
     end
     
