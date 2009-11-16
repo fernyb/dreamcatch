@@ -11,7 +11,9 @@ begin
     gem.homepage = "http://github.com/fernyb/dreamcatch"
     gem.authors = ["Fernando Barajas"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "curb"
+    gem.add_dependency "grit"
+    gem.add_dependency "davclient" # => Should use the fernyb version
+
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
