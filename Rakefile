@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "dreamcatch"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Git on Dreamhost WebDAV}
+    gem.description = %Q{A simple way to add and remove git repos on dreamhost webdav}
     gem.email = "fernyb@fernyb.net"
     gem.homepage = "http://github.com/fernyb/dreamcatch"
     gem.authors = ["Fernando Barajas"]
