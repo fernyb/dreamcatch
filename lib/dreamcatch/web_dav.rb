@@ -41,7 +41,7 @@ module Dreamcatch
           else
             webdav.put("#{remote_url}#{base_file_name}", "#{local_dir}#{base_file_name}")
           end
-        end.select {|status| status != true }
+        end.select {|status| status == false }
         results.size > 0 ? results : true
       end
     end

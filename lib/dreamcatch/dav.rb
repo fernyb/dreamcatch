@@ -18,10 +18,13 @@ module Dreamcatch
     
       def put(remote_file_name, local_file_name)
         curl_command = "--upload-file #{local_file_name} #{remote_file_name}"
-        response = exec(curl_command)
-        puts response.inspect
-        puts "\n\n"
-        nil
+        resp = exec(curl_command)
+        puts "* PUT: #{resp.status_code} #{resp.status}" if $DEBUG
+        if resp.status_code == 201
+          resp
+        else
+          false
+        end
       end
       
       def mkcol(remote_url, props)
@@ -50,10 +53,10 @@ module Dreamcatch
         resp = Dreamcatch::DAVResponse.new
         if head.size == 1
          resp.status      = head.first[2]
-         resp.status_code = head.first[1]
+         resp.status_code = head.first[1].to_i
         elsif head.size >= 2
          resp.status      = head.last[2]
-         resp.status_code = head.last[1]
+         resp.status_code = head.last[1].to_i
         end
         
         body = response.to_s.split("\r\n\r\n")

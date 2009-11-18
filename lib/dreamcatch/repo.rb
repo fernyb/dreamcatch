@@ -3,6 +3,7 @@ module Dreamcatch
   
   class Repo
     attr_reader :webdav
+    attr_reader :errors
     
     def initialize(opts={})
       @name = opts[:name]
@@ -53,6 +54,10 @@ module Dreamcatch
     
     def init_bare(repo_path)
       Grit::Repo.init_bare(repo_path)
+    end
+    
+    def errors
+      []
     end
   end
 
