@@ -18,5 +18,8 @@ coverage
 rdoc
 pkg
 integration
+integration_test
+integration_test/
+integration_test/*
 .document
 ## PROJECT::SPECIFIC

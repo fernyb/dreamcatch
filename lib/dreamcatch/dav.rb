@@ -16,9 +16,56 @@ module Dreamcatch
         # TODO: implement
       end
     
-      def put(local_dir, repo_name)
-        # TODO implement
+      def put(remote_file_name, local_file_name)
+        curl_command = "--upload-file #{local_file_name} #{remote_file_name}"
+        response = exec(curl_command)
+        puts response.inspect
+        puts "\n\n"
+        nil
+      end
+      
+      def mkcol(remote_url, props)
+        
+      end
+      
+      private
+      def exec(command, opts=[])
+        options = []
+        options << "--include"
+        options << "--location"
+        options  = opts | options
+        options = options.join(" ")
+        response = nil
+        
+        curl_command = "curl #{options} #{command}"
+        puts "\n*** #{curl_command}\n" if $DEBUG
+        Open3.popen3(curl_command) do |stdin, stdout, stderr|
+          response = stdout.readlines.join("")
+        end
+        response = headers_and_response_from_response(response)
+      end
+      
+      def headers_and_response_from_response(response)
+        head = response.to_s.scan(/HTTP\/(\d+.\d+) (\d+) (.*)\r/)
+        resp = Dreamcatch::DAVResponse.new
+        if head.size == 1
+         resp.status      = head.first[2]
+         resp.status_code = head.first[1]
+        elsif head.size >= 2
+         resp.status      = head.last[2]
+         resp.status_code = head.last[1]
+        end
+        
+        body = response.to_s.split("\r\n\r\n")
+        if body.last.match(/^HTTP\/(\d+).(\d+)/)
+          resp.head = body.last
+          resp.body = nil
+        else
+          resp.head = body[(body.size - 2)]
+          resp.body = body.last
+        end
+        resp
       end
     end
-  end
+  end # DAV
 end
