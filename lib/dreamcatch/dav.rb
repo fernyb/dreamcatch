@@ -27,8 +27,18 @@ module Dreamcatch
         end
       end
       
-      def mkcol(remote_url, props)
-        
+      def mkcol(remote_url)
+        curl_command = []
+        curl_command << "--request MKCOL"
+        curl_command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
+        curl_command = "curl " << curl_command.join(" ") + " " + remote_url
+        resp = exec(curl_command)
+        puts "* MKCOL #{resp.status_code} #{resp.status}" if $DEBUG
+        if resp.status_code == 201
+          resp
+        else
+          false
+        end
       end
       
       private
