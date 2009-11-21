@@ -41,7 +41,7 @@ module Dreamcatch
         curl_command = []
         curl_command << "--request MKCOL"
         curl_command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
-        curl_command = "curl " << curl_command.join(" ") + " " + remote_url
+        curl_command = curl_command.join(" ") + " " + remote_url
         resp = exec(curl_command)
         puts "* MKCOL #{resp.status_code} #{resp.status}" if $DEBUG
         if resp.status_code == 201
@@ -65,7 +65,10 @@ module Dreamcatch
         Open3.popen3(curl_command) do |stdin, stdout, stderr|
           response = stdout.readlines.join("")
         end
-
+        puts "\n\n"
+        puts response
+        puts "\n\n"
+        
         response = headers_and_response_from_response(response)
       end
       
