@@ -1,0 +1,18 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 201 Created
+Date: Sat, 21 Nov 2009 15:21:40 GMT
+Server: Apache
+Location: http://example.com/git/test.txt
+Vary: Accept-Encoding
+MS-Author-Via: DAV
+Content-Length: 185
+Content-Type: text/html; charset=ISO-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>201 Created</title>
+</head><body>
+<h1>Created</h1>
+<p>Resource /git/test.txt has been created.</p>
+</body></html>

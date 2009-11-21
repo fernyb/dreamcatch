@@ -4,8 +4,18 @@
 module Dreamcatch
   class DAV
     class << self
-      def exists?(repo)
+      def exists?(remote_file_name)
         # TODO: implement
+        curl_command = " #{remote_file_name}"
+        resp = exec(curl_command)
+        puts "* Exists : #{resp.status_code} #{resp.status}\n" if $DEBUG
+        if resp.status_code == 404
+          false
+        elsif resp.status_code == 200
+          true
+        else
+          nil
+        end
       end
     
       def delete(repo)
@@ -55,6 +65,7 @@ module Dreamcatch
         Open3.popen3(curl_command) do |stdin, stdout, stderr|
           response = stdout.readlines.join("")
         end
+
         response = headers_and_response_from_response(response)
       end
       

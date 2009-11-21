@@ -8,3 +8,7 @@ require 'spec/autorun'
 Spec::Runner.configure do |config|
   
 end
+
+def response_for(method)
+  File.open(File.dirname(__FILE__) + "/fixtures/response/#{method}.txt") {|f| f.read }
+end

@@ -25,9 +25,9 @@ module Dreamcatch
     end
     
     def put(local_dir, save_name)
-      if File.directory?("#{local_dir}/#{save_name}")
+      if File.directory?("#{local_dir}/#{save_name}") && !exists?("#{save_name}")
         recursive_put(local_dir, save_name)
-      else
+      elsif !File.directory?("#{local_dir}/#{save_name}") && !exists?("#{save_name}")
         webdav.put("#{remote_url}/#{save_name}", "#{local_dir}/#{save_name}")
       end
     end
