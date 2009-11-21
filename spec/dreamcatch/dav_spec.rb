@@ -54,4 +54,23 @@ describe Dreamcatch::DAV do
     end        
   end
   
+  describe :put do
+    it "should execute correct command" do
+      response = mock("Response", :status_code => 201)
+      Dreamcatch::DAV.should_receive(:exec).with("--upload-file /Users/fernyb/rails/local_file.txt http://example.com/git/file.txt").and_return(response)
+      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt")  
+    end
+    
+    it "should return response object when status code is 201" do
+      response = mock("Response", :status_code => 201)
+      Dreamcatch::DAV.stub!(:exec).and_return(response)
+      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should == response
+    end
+
+    it "should return response object when status code is 201" do
+      response = mock("Response", :status_code => 500)
+      Dreamcatch::DAV.stub!(:exec).and_return(response)
+      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should be_false
+    end    
+  end
 end
