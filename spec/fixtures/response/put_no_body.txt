@@ -1,0 +1,8 @@
+HTTP/1.1 201 Created
+Date: Sat, 21 Nov 2009 15:21:40 GMT
+Server: Apache
+Location: http://example.com/git/test.txt
+Vary: Accept-Encoding
+MS-Author-Via: DAV
+Content-Length: 185
+Content-Type: text/html; charset=ISO-8859-1

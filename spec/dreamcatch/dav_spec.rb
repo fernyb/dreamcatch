@@ -6,22 +6,23 @@ describe Dreamcatch::DAV do
       before :each do
         @resp = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put"))
         @resp_two = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put_two"))
+        @resp_three = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put_no_body"))
       end
 
       it "should return Dreamcatch::Response" do
-        [@resp, @resp_two].each {|rp| rp.should be_kind_of(Dreamcatch::DAVResponse) }
+        [@resp, @resp_two, @resp_three].each {|rp| rp.should be_kind_of(Dreamcatch::DAVResponse) }
       end
     
       it "should have status code 201 Created" do
-        [@resp, @resp_two].each {|rp| rp.status_code.should == 201 }
+        [@resp, @resp_two, @resp_three].each {|rp| rp.status_code.should == 201 }
       end
     
       it "should have status" do
-        [@resp, @resp_two].each {|rp| rp.status.should == "Created" }
+        [@resp, @resp_two, @resp_three].each {|rp| rp.status.should == "Created" }
       end
     
       it "should have http headers" do
-        [@resp, @resp_two].each do |rp| 
+        [@resp, @resp_two, @resp_three].each do |rp| 
           rp.head.should == "HTTP/1.1 201 Created\r\nDate: Sat, 21 Nov 2009 15:21:40 GMT\r\nServer: Apache\r\nLocation: http://example.com/git/test.txt\r\nVary: Accept-Encoding\r\nMS-Author-Via: DAV\r\nContent-Length: 185\r\nContent-Type: text/html; charset=ISO-8859-1"
         end
       end
@@ -31,6 +32,10 @@ describe Dreamcatch::DAV do
           rp.body.should == "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head>\r\n<title>201 Created</title>\r\n</head><body>\r\n<h1>Created</h1>\r\n<p>Resource /git/test.txt has been created.</p>\r\n</body></html>\r\n"
         end
       end        
+      
+      it "body should be nil" do
+        @resp_three.body.should be_nil
+      end
     end # => end put 
   end
   
