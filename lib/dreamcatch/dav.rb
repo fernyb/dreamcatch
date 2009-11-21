@@ -5,9 +5,7 @@ module Dreamcatch
   class DAV
     class << self
       def exists?(remote_file_name)
-        # TODO: implement
-        curl_command = " #{remote_file_name}"
-        resp = exec(curl_command)
+        resp = exec("#{remote_file_name}")
         puts "* Exists : #{resp.status_code} #{resp.status}\n" if $DEBUG
         if resp.status_code == 404
           false

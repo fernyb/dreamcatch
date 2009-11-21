@@ -73,4 +73,30 @@ describe Dreamcatch::DAV do
       Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should be_false
     end    
   end
+  
+  describe :exists? do
+    it "should execute correct command" do
+      response = mock("Response", :status_code => 200)
+      Dreamcatch::DAV.should_receive(:exec).with("http://example.com/git/file.txt").and_return(response)
+      Dreamcatch::DAV.exists?("http://example.com/git/file.txt")
+    end
+    
+    it "returns false when status_code is 404" do
+      response = mock("Response", :status_code => 404)
+      Dreamcatch::DAV.stub!(:exec).and_return(response)
+      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_false  
+    end
+    
+    it "returns true when status_code is 200" do
+      response = mock("Response", :status_code => 200)
+      Dreamcatch::DAV.stub!(:exec).and_return(response)
+      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_true
+    end
+
+    it "returns nil when status_code is not 200 or 404" do
+      response = mock("Response", :status_code => 500)
+      Dreamcatch::DAV.stub!(:exec).and_return(response)
+      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_nil
+    end
+  end
 end
