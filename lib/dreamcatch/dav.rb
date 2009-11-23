@@ -16,8 +16,25 @@ module Dreamcatch
         end
       end
     
-      def delete(repo)
-        # TODO: implement
+      def delete(remote_file)
+        command = []
+        command << "--request DELETE"
+        command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
+        command << remote_file
+        curl_command = command.join(" ")
+        
+        puts "* #{curl_command}" if $DEBUG
+        resp = run(curl_command)
+      
+        puts "* DELETE: #{resp.status_code} #{resp.status}" if $DEBUG
+        
+        if resp.status_code == 401
+          false
+        elsif resp.status_code == 204
+          resp
+        else
+          false
+        end
       end
     
       def rename(current_name, new_name)
@@ -61,7 +78,7 @@ module Dreamcatch
         
         stdin, stdout, stderr = Open3.popen3(curl_command)
         response = stdout.readlines.join("")
-        
+      
         response = headers_and_response_from_response(response)
       end
       

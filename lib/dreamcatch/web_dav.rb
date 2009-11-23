@@ -11,6 +11,7 @@ module Dreamcatch
     end
     
     def exists?(save_name)
+      save_name << "/" if save_name.match(/\.git$/)
       webdav.exists?("#{remote_url}/#{save_name}")
     end
     

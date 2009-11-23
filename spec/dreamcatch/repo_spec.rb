@@ -92,7 +92,61 @@ describe "Dreamcatch::Repo" do
   end
   
   describe :delete do
-    it "should delete when it does exists"
-    it "should remove local repo when it does exists"
+    it "should delete repo when it does exists" do
+      @repo.webdav.stub!(:exists?).and_return true
+      @repo.webdav.should_receive(:delete).with(@repo.instance_variable_get(:@name)).and_return true 
+      @repo.stub!(:local_repo_exists?).and_return false
+      
+      @repo.delete.should be_true
+    end
+    
+    it "should not delete repo when it does not exists" do
+      @repo.webdav.stub!(:exists?).and_return false 
+      @repo.stub!(:local_repo_exists?).and_return false
+      
+      @repo.delete.should be_nil
+    end
+    
+    it "should delete local repo when it does exists" do
+      @repo.webdav.stub!(:exists?).and_return false 
+      @repo.stub!(:local_repo_exists?).and_return true
+      FileUtils.should_receive(:remove_dir).with(@repo.local_repo).and_return true
+      
+      @repo.delete.should be_true
+    end
+
+    it "should return false when delete local repo does not exists" do
+      @repo.webdav.stub!(:exists?).and_return false 
+      @repo.stub!(:local_repo_exists?).and_return true
+      FileUtils.should_receive(:remove_dir).with(@repo.local_repo).and_return false
+      
+      @repo.delete.should be_nil
+    end
+    
+    it "should not remote directory when local repo does not exists" do
+      @repo.webdav.stub!(:exists?).and_return false 
+      @repo.stub!(:local_repo_exists?).and_return false
+      FileUtils.should_not_receive(:remove_dir).with(@repo.local_repo).and_return false
+      
+      @repo.delete.should be_nil
+    end
+    
+    it "should return true when remote file is deleted and local repo is deleted" do
+      @repo.webdav.stub!(:exists?).and_return true
+      @repo.webdav.should_receive(:delete).and_return true
+      @repo.stub!(:local_repo_exists?).and_return true
+      FileUtils.should_receive(:remove_dir).and_return true
+      
+      @repo.delete.should be_true
+    end
+    
+    it "should return false when remote file is deleted and fails, and local repo is deleted" do
+      @repo.webdav.stub!(:exists?).and_return true
+      @repo.webdav.should_receive(:delete).and_return false
+      @repo.stub!(:local_repo_exists?).and_return true
+      FileUtils.should_receive(:remove_dir).and_return true
+      
+      @repo.delete.should be_false
+    end    
   end
 end

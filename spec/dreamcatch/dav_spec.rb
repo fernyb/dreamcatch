@@ -134,4 +134,36 @@ describe "Dreamcatch::DAV" do
       Dreamcatch::DAV.send(:run, "--request MKCOL http://example.com/git/collection")
     end
   end
+  
+  describe :delete do
+    it "should execute correct command" do
+      resp = mock("Response", :status_code => 204)
+      Dreamcatch::DAV.should_receive(:run).with(%Q{--request DELETE --header 'Content-Type: text/xml; charset="utf-8"' http://example.com/git/file.txt}).and_return(resp)
+      Dreamcatch::DAV.delete("http://example.com/git/file.txt")
+    end
+    
+    it "should return Response when status_code is 204" do
+      resp = mock("Response", :status_code => 204)
+      Dreamcatch::DAV.stub!(:run).and_return resp
+      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should == resp
+    end
+    
+    it "should not return Response when status code is not 201" do
+      resp = mock("Response", :status_code => 500)
+      Dreamcatch::DAV.stub!(:run).and_return resp
+      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should_not == resp  
+    end
+    
+    it "should return false when status_code is not 201" do
+      resp = mock("Response", :status_code => 500)
+      Dreamcatch::DAV.stub!(:run).and_return resp
+      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should be_false  
+    end
+    
+    it "should return false when status_code is 401" do
+      resp = mock("Response", :status_code => 401)
+      Dreamcatch::DAV.stub!(:run).and_return resp
+      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should be_false    
+    end
+  end
 end

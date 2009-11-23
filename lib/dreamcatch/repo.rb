@@ -16,8 +16,9 @@ module Dreamcatch
     def delete
       status = []
       status << webdav.delete("#{@name}") if webdav.exists?("#{@name}")
-      delete_status = FileUtils.remove_dir(local_repo) if local_repo_exists?
-      status << true if delete_status.to_s == "0"
+      if local_repo_exists?
+        status << true if FileUtils.remove_dir(local_repo)
+      end
       
       if status.size == 2 
         status.select {|s| s == true }.to_a.size == 2
@@ -52,8 +53,8 @@ module Dreamcatch
       webdav.put(local_dir, repo_name)
     end
     
-    def init_bare(repo_path)
-      Grit::Repo.init_bare(repo_path)
+    def init_bare(local_repo_path)
+      Grit::Repo.init_bare(local_repo_path)
     end
     
     def errors
