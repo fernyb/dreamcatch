@@ -38,7 +38,19 @@ module Dreamcatch
       end
     
       def rename(current_name, new_name)
-        # TODO: implement
+        command = []
+        command << "--request MOVE"
+        command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
+        command << %Q{--header 'Destination: #{new_name}'"}
+        curl_command = command.join(" ") + " " + current_name
+        resp = run(curl_command)
+        puts "* MOVE: #{resp.status_code} #{resp.status}" if $DEBUG
+        
+        if resp.status_code == 201
+          resp
+        else
+          false
+        end  
       end
     
       def put(remote_file_name, local_file_name)
