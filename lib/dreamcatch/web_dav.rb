@@ -20,7 +20,7 @@ module Dreamcatch
     end
     
     def rename(name, new_name)
-      if !webdav.exists?("#{remote_url}/#{new_name}")
+      unless webdav.exists?("#{remote_url}/#{new_name}")
         webdav.rename("#{remote_url}/#{name}", "#{remote_url}/#{new_name}")
       end
     end

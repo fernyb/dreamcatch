@@ -40,9 +40,11 @@ module Dreamcatch
       def rename(current_name, new_name)
         command = []
         command << "--request MOVE"
+        command << %Q{--header 'Authorization: Basic #{Dreamcatch::Config.credentials}'}
         command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
-        command << %Q{--header 'Destination: #{new_name}'"}
+        command << %Q{--header 'Destination: #{new_name}'}
         curl_command = command.join(" ") + " " + current_name
+        puts "* #{curl_command}" if $DEBUG
         resp = run(curl_command)
         puts "* MOVE: #{resp.status_code} #{resp.status}" if $DEBUG
         
@@ -84,13 +86,13 @@ module Dreamcatch
         options << "--location"
         options = options.join(" ")
         response = nil
-      
+        
         curl_command = "curl #{options} #{command}"
         puts "\n*** #{curl_command}\n" if $DEBUG
         
         stdin, stdout, stderr = Open3.popen3(curl_command)
         response = stdout.readlines.join("")
-      
+        
         response = headers_and_response_from_response(response)
       end
       
@@ -106,7 +108,7 @@ module Dreamcatch
         end
         
         body = response.to_s.split("\r\n\r\n")
-        if body.last.match(/^HTTP\/(\d+).(\d+)/)
+        if body.last.to_s.match(/^HTTP\/(\d+).(\d+)/)
           resp.head = body.last
           resp.body = nil
         else

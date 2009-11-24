@@ -12,6 +12,10 @@ module Dreamcatch
           "http://#{@remote_url}"
         end  
       end
+      
+      def credentials
+        Base64.encode64("#{@username}:#{@password}").gsub(/\n+/, "")
+      end
     end
   end
 end

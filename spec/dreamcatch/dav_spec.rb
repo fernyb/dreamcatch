@@ -166,4 +166,28 @@ describe "Dreamcatch::DAV" do
       Dreamcatch::DAV.delete("http://example.com/git/file.txt").should be_false    
     end
   end
+  
+  describe :rename do
+    before :each do
+      Dreamcatch::Config.stub!(:credentials).and_return "username:password"
+    end
+    
+    it "should execute correct command" do
+      resp = mock("Response", :status_code => 201)
+      Dreamcatch::DAV.should_receive(:run).with(%Q{--request MOVE --header 'Authorization: Basic username:password' --header 'Content-Type: text/xml; charset=\"utf-8\"' --header 'Destination: http://example.com/git/new_name.git' http://example.com/git/name.git}).and_return(resp)
+      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git")
+    end
+    
+    it "should return response object when status code is 201" do
+      resp = mock("Response", :status_code => 201)
+      Dreamcatch::DAV.stub!(:run).and_return(resp)
+      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should == resp
+    end
+    
+    it "should return false when status is not 201" do
+      resp = mock("Response", :status_code => 500)
+      Dreamcatch::DAV.stub!(:run).and_return resp
+      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should be_false  
+    end
+  end
 end
