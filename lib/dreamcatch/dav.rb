@@ -40,7 +40,6 @@ module Dreamcatch
       def rename(current_name, new_name)
         command = []
         command << "--request MOVE"
-        command << %Q{--header 'Authorization: Basic #{Dreamcatch::Config.credentials}'}
         command << %Q{--header 'Content-Type: text/xml; charset="utf-8"'}
         command << %Q{--header 'Destination: #{new_name}'}
         curl_command = command.join(" ") + " " + current_name
@@ -56,7 +55,9 @@ module Dreamcatch
       end
     
       def put(remote_file_name, local_file_name)
-        curl_command = "--upload-file #{local_file_name} #{remote_file_name}"
+        command = []
+        command << "--upload-file #{local_file_name} #{remote_file_name}"
+        curl_command = command.join(" ")
         resp = run(curl_command)
         puts "* PUT: #{resp.status_code} #{resp.status}" if $DEBUG
         if resp.status_code == 201
@@ -84,6 +85,7 @@ module Dreamcatch
         options = []
         options << "--include"
         options << "--location"
+        options << %Q{--header 'Authorization: Basic #{Dreamcatch::Config.credentials}'}
         options = options.join(" ")
         response = nil
         

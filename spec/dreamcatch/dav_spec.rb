@@ -110,7 +110,7 @@ describe "Dreamcatch::DAV" do
       stdin, stdout, stderr = mock("StdIn"), mock("StdOut"), mock("StdErr")
       stdout = response_for_into_array("put")
       
-      Open3.should_receive(:popen3).with("curl --include --location http://example.com/git/file.txt").and_return([stdin, stdout, stderr])
+      Open3.should_receive(:popen3).with("curl --include --location --header 'Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=' http://example.com/git/file.txt").and_return([stdin, stdout, stderr])
       Dreamcatch::DAV.send(:run, "http://example.com/git/file.txt")
     end
     
@@ -118,7 +118,7 @@ describe "Dreamcatch::DAV" do
       stdin, stdout, stderr = mock("StdIn"), mock("StdOut"), mock("StdErr")
       stdout = response_for_into_array("put")
       
-      Open3.should_receive(:popen3).with("curl --include --location --request MKCOL http://example.com/git/collection").and_return([stdin, stdout, stderr])
+      Open3.should_receive(:popen3).with("curl --include --location --header 'Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=' --request MKCOL http://example.com/git/collection").and_return([stdin, stdout, stderr])
       Dreamcatch::DAV.send(:run, "--request MKCOL http://example.com/git/collection").should be_kind_of(Dreamcatch::DAVResponse)
     end
     
@@ -174,7 +174,7 @@ describe "Dreamcatch::DAV" do
     
     it "should execute correct command" do
       resp = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.should_receive(:run).with(%Q{--request MOVE --header 'Authorization: Basic username:password' --header 'Content-Type: text/xml; charset=\"utf-8\"' --header 'Destination: http://example.com/git/new_name.git' http://example.com/git/name.git}).and_return(resp)
+      Dreamcatch::DAV.should_receive(:run).with(%Q{--request MOVE --header 'Content-Type: text/xml; charset=\"utf-8\"' --header 'Destination: http://example.com/git/new_name.git' http://example.com/git/name.git}).and_return(resp)
       Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git")
     end
     
