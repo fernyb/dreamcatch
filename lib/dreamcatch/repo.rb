@@ -6,25 +6,25 @@ module Dreamcatch
     attr_reader :errors
     
     def initialize(opts={})
+      @errors ||= []
       @name = opts[:name]
       @dir  = opts[:dir]
       raise Dreamcatch::Invalid.new("Repo must have name") if @name.nil?
       raise Dreamcatch::Invalid.new("Repo must have dir") if @dir.nil?
-      @webdav = Dreamcatch::WebDav.new(Dreamcatch::Config.remote_url)    
+      @webdav = Dreamcatch::WebDav.new(Dreamcatch::Config.remote_url, self)
     end
     
     def delete
-      status = []
-      status << webdav.delete("#{@name}") if webdav.exists?("#{@name}")
-      if local_repo_exists?
-        status << true if FileUtils.remove_dir(local_repo)
-      end
-      
-      if status.size == 2 
-        status.select {|s| s == true }.to_a.size == 2
+      if webdav.exists?("#{@name}")
+        webdav.delete("#{@name}")
       else
-        status.first
+        @errors << Dreamcatch::Error.new(%Q{#{@name} does not exists})
+        nil
       end
+    end
+    
+    def delete_local
+      # TODO: delete the local repo if any
     end
     
     def rename(new_name)
@@ -33,7 +33,7 @@ module Dreamcatch
       end
     end
     
-    def save
+    def save    
       if local_repo_exists?
         upload_to_webdav(@dir, @name)
       elsif init_bare(local_repo)
@@ -58,7 +58,12 @@ module Dreamcatch
     end
     
     def errors
-      []
+      @errors
+    end
+    
+    def errors=(message)
+      @errors ||= []
+      @errors << message if message.kind_of?(Dreamcatch::Error)
     end
   end
 

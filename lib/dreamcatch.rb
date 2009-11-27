@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + "/dreamcatch/dav"
 require File.dirname(__FILE__) + "/dreamcatch/dav_response"
 require File.dirname(__FILE__) + "/dreamcatch/web_dav"
 require File.dirname(__FILE__) + "/dreamcatch/repo"
+require File.dirname(__FILE__) + "/dreamcatch/error"
 
 require "rubygems"
 require "grit"

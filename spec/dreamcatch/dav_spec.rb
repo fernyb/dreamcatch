@@ -1,12 +1,18 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Dreamcatch::DAV" do
+  before :each do
+    @dav = Dreamcatch::DAV.new
+    @dav.notifier = mock("Notifier", :errors => [])  
+  end
+  
   describe :headers_and_response_from_response do
     describe :put do
       before :each do
-        @resp = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put"))
-        @resp_two = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put_two"))
-        @resp_three = Dreamcatch::DAV.send(:headers_and_response_from_response, response_for("put_no_body"))
+        dav = Dreamcatch::DAV.new
+        @resp = dav.send(:headers_and_response_from_response, response_for("put"))
+        @resp_two = dav.send(:headers_and_response_from_response, response_for("put_two"))
+        @resp_three = dav.send(:headers_and_response_from_response, response_for("put_no_body"))
       end
 
       it "should return Dreamcatch::Response" do
@@ -42,66 +48,70 @@ describe "Dreamcatch::DAV" do
   describe :mkcol do
     it "should execute correct command" do
       response = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.should_receive(:run).with(%Q{--request MKCOL --header 'Content-Type: text/xml; charset="utf-8"' http://example.com/git/repo.git}).and_return(response)
-      Dreamcatch::DAV.mkcol("http://example.com/git/repo.git")
+      @dav.should_receive(:run).with(%Q{--request MKCOL --header 'Content-Type: text/xml; charset="utf-8"' http://example.com/git/repo.git}).and_return(response)
+      @dav.mkcol("http://example.com/git/repo.git")
     end
 
     it "should return response when status_code is 201" do
       response = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.mkcol("http://example.com/git/repo.git").should == response
+      @dav.stub!(:run).and_return(response)
+      @dav.mkcol("http://example.com/git/repo.git").should == response
     end
 
     it "should return false when status_code is not 201" do
-      response = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.mkcol("http://example.com/git/repo.git").should be_false
+      response = mock("Response", :status_code => 500, :status => "Failure")
+      @dav.stub!(:run).and_return(response)
+      @dav.mkcol("http://example.com/git/repo.git").should be_false
     end        
   end
   
   describe :put do
     it "should execute correct command" do
       response = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.should_receive(:run).with("--upload-file /Users/fernyb/rails/local_file.txt http://example.com/git/file.txt").and_return(response)
-      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt")  
+      @dav.should_receive(:run).with("--upload-file /Users/fernyb/rails/local_file.txt http://example.com/git/file.txt").and_return(response)
+      @dav.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt")  
     end
     
     it "should return response object when status code is 201" do
       response = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should == response
+      @dav.stub!(:run).and_return(response)
+      @dav.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should == response
     end
 
     it "should return response object when status code is 201" do
-      response = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should be_false
+      response = mock("Response", :status_code => 500, :status => "Failure")
+      @dav.stub!(:run).and_return(response)
+      @dav.put("http://example.com/git/file.txt", "/Users/fernyb/rails/local_file.txt").should be_false
     end    
   end
   
   describe :exists? do
     it "should execute correct command" do
       response = mock("Response", :status_code => 200)
-      Dreamcatch::DAV.should_receive(:run).with("http://example.com/git/file.txt").and_return(response)
-      Dreamcatch::DAV.exists?("http://example.com/git/file.txt")
+      dav = Dreamcatch::DAV.new
+      dav.should_receive(:run).with("http://example.com/git/file.txt").and_return(response)
+      dav.exists?("http://example.com/git/file.txt")
     end
     
     it "returns false when status_code is 404" do
       response = mock("Response", :status_code => 404)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_false  
+      dav = Dreamcatch::DAV.new
+      dav.stub!(:run).and_return(response)
+      dav.exists?("http://example.com/git/file.txt").should be_false  
     end
     
     it "returns true when status_code is 200" do
       response = mock("Response", :status_code => 200)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_true
+      dav = Dreamcatch::DAV.new
+      dav.stub!(:run).and_return(response)
+      dav.exists?("http://example.com/git/file.txt").should be_true
     end
 
     it "returns nil when status_code is not 200 or 404" do
       response = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return(response)
-      Dreamcatch::DAV.exists?("http://example.com/git/file.txt").should be_nil
+      dav = Dreamcatch::DAV.new
+      dav.stub!(:run).and_return(response)
+      dav.exists?("http://example.com/git/file.txt").should be_nil
     end
   end
   
@@ -111,7 +121,7 @@ describe "Dreamcatch::DAV" do
       stdout = response_for_into_array("put")
       
       Open3.should_receive(:popen3).with("curl --include --location --header 'Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=' http://example.com/git/file.txt").and_return([stdin, stdout, stderr])
-      Dreamcatch::DAV.send(:run, "http://example.com/git/file.txt")
+      @dav.send(:run, "http://example.com/git/file.txt")
     end
     
     it "should return Dreamcatch::DAVResponse object" do
@@ -119,7 +129,7 @@ describe "Dreamcatch::DAV" do
       stdout = response_for_into_array("put")
       
       Open3.should_receive(:popen3).with("curl --include --location --header 'Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=' --request MKCOL http://example.com/git/collection").and_return([stdin, stdout, stderr])
-      Dreamcatch::DAV.send(:run, "--request MKCOL http://example.com/git/collection").should be_kind_of(Dreamcatch::DAVResponse)
+      @dav.send(:run, "--request MKCOL http://example.com/git/collection").should be_kind_of(Dreamcatch::DAVResponse)
     end
     
     it "should parse the http response" do
@@ -129,41 +139,40 @@ describe "Dreamcatch::DAV" do
       stdout.rewind
       
       Open3.stub!(:popen3).and_return([stdin, stdout, stderr])
-      Dreamcatch::DAV.should_receive(:headers_and_response_from_response).with(response)
-      
-      Dreamcatch::DAV.send(:run, "--request MKCOL http://example.com/git/collection")
+      @dav.should_receive(:headers_and_response_from_response).with(response)
+      @dav.send(:run, "--request MKCOL http://example.com/git/collection")
     end
   end
   
   describe :delete do
     it "should execute correct command" do
       resp = mock("Response", :status_code => 204)
-      Dreamcatch::DAV.should_receive(:run).with(%Q{--request DELETE --header 'Content-Type: text/xml; charset="utf-8"' http://example.com/git/file.txt}).and_return(resp)
-      Dreamcatch::DAV.delete("http://example.com/git/file.txt")
+      @dav.should_receive(:run).with(%Q{--request DELETE --header 'Content-Type: text/xml; charset="utf-8"' http://example.com/git/file.txt}).and_return(resp)
+      @dav.delete("http://example.com/git/file.txt")
     end
     
     it "should return Response when status_code is 204" do
       resp = mock("Response", :status_code => 204)
-      Dreamcatch::DAV.stub!(:run).and_return resp
-      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should == resp
+      @dav.stub!(:run).and_return resp
+      @dav.delete("http://example.com/git/file.txt").should == resp
     end
     
     it "should not return Response when status code is not 201" do
-      resp = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return resp
-      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should_not == resp  
+      resp = mock("Response", :status_code => 500, :status => "Failure")
+      @dav.stub!(:run).and_return resp
+      @dav.delete("http://example.com/git/file.txt").should_not == resp  
     end
     
     it "should return false when status_code is not 201" do
-      resp = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return resp
-      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should be_false  
+      resp = mock("Response", :status_code => 500, :status => "Failure")
+      @dav.stub!(:run).and_return resp
+      @dav.delete("http://example.com/git/file.txt").should be_false  
     end
     
     it "should return false when status_code is 401" do
-      resp = mock("Response", :status_code => 401)
-      Dreamcatch::DAV.stub!(:run).and_return resp
-      Dreamcatch::DAV.delete("http://example.com/git/file.txt").should be_false    
+      resp = mock("Response", :status_code => 401, :status => "Four Oh Four")
+      @dav.stub!(:run).and_return resp
+      @dav.delete("http://example.com/git/file.txt").should be_false    
     end
   end
   
@@ -174,20 +183,20 @@ describe "Dreamcatch::DAV" do
     
     it "should execute correct command" do
       resp = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.should_receive(:run).with(%Q{--request MOVE --header 'Content-Type: text/xml; charset=\"utf-8\"' --header 'Destination: http://example.com/git/new_name.git' http://example.com/git/name.git}).and_return(resp)
-      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git")
+      @dav.should_receive(:run).with(%Q{--request MOVE --header 'Content-Type: text/xml; charset=\"utf-8\"' --header 'Destination: http://example.com/git/new_name.git' http://example.com/git/name.git}).and_return(resp)
+      @dav.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git")
     end
     
     it "should return response object when status code is 201" do
       resp = mock("Response", :status_code => 201)
-      Dreamcatch::DAV.stub!(:run).and_return(resp)
-      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should == resp
+      @dav.stub!(:run).and_return(resp)
+      @dav.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should == resp
     end
     
     it "should return false when status is not 201" do
-      resp = mock("Response", :status_code => 500)
-      Dreamcatch::DAV.stub!(:run).and_return resp
-      Dreamcatch::DAV.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should be_false  
+      resp = mock("Response", :status_code => 500, :status => "Five hundred")
+      @dav.stub!(:run).and_return resp
+      @dav.rename("http://example.com/git/name.git", "http://example.com/git/new_name.git").should be_false  
     end
   end
 end

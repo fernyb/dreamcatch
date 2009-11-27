@@ -1,13 +1,14 @@
 module Dreamcatch
   class WebDav
     attr_reader :remote_url
+    attr_accessor :notifier
+    attr_accessor :webdav
     
-    def initialize(url)
+    def initialize(url, notify=nil)
       @remote_url = url
-    end
-    
-    def webdav
-      Dreamcatch::DAV
+      @webdav ||= Dreamcatch::DAV.new
+      @webdav.notifier = notify
+      @notifier = notify
     end
     
     def exists?(save_name)
@@ -22,13 +23,18 @@ module Dreamcatch
     def rename(name, new_name)
       unless webdav.exists?("#{remote_url}/#{new_name}")
         webdav.rename("#{remote_url}/#{name}", "#{remote_url}/#{new_name}")
+      else
+        @notifier.errors << Dreamcatch::Error.new(%Q{#{new_name} does not exists})
       end
     end
     
     def put(local_dir, save_name)
-      if File.directory?("#{local_dir}/#{save_name}") && !exists?("#{save_name}")
+      if exists?("#{save_name}")
+        @notifier.errors << Dreamcatch::Error.new(%Q{#{save_name} already exists})
+        return nil
+      elsif File.directory?("#{local_dir}/#{save_name}")
         recursive_put(local_dir, save_name)
-      elsif !File.directory?("#{local_dir}/#{save_name}") && !exists?("#{save_name}")
+      elsif !File.directory?("#{local_dir}/#{save_name}")
         webdav.put("#{remote_url}/#{save_name}", "#{local_dir}/#{save_name}")
       end
     end
@@ -42,8 +48,8 @@ module Dreamcatch
           else
             webdav.put("#{remote_url}#{base_file_name}", "#{local_dir}#{base_file_name}")
           end
-        end.select {|status| status == false }
-        results.size > 0 ? results : true
+        end.select {|status| status == false || status.nil? }
+        results.include?(false) == false
       end
     end
     
