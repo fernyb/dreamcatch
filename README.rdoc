@@ -54,6 +54,11 @@ A Ruby Gem to create new git repositories on dreamhost using WebDav
     
     sudo gem install grit
 
+
+== Other Dependencies
+
+* *cURL* must be in available on your machine.
+
   
 == Note on Patches/Pull Requests
  
