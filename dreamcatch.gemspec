@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Fernando Barajas"]
-  s.date = %q{2009-11-15}
-  s.description = %q{TODO: longer description of your gem}
+  s.date = %q{2009-11-27}
+  s.description = %q{A simple way to add and remove git repos on dreamhost webdav}
   s.email = %q{fernyb@fernyb.net}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -22,11 +22,23 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "dreamcatch.gemspec",
      "lib/dreamcatch.rb",
      "lib/dreamcatch/config.rb",
+     "lib/dreamcatch/dav.rb",
+     "lib/dreamcatch/dav_response.rb",
+     "lib/dreamcatch/error.rb",
      "lib/dreamcatch/repo.rb",
      "lib/dreamcatch/web_dav.rb",
+     "spec/dreamcatch/config_spec.rb",
+     "spec/dreamcatch/dav_response_spec.rb",
+     "spec/dreamcatch/dav_spec.rb",
+     "spec/dreamcatch/error_spec.rb",
      "spec/dreamcatch/repo_spec.rb",
+     "spec/fixtures/response/404_not_found.txt",
+     "spec/fixtures/response/put.txt",
+     "spec/fixtures/response/put_no_body.txt",
+     "spec/fixtures/response/put_two.txt",
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
@@ -34,9 +46,13 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Git on Dreamhost WebDAV}
   s.test_files = [
-    "spec/dreamcatch/repo_spec.rb",
+    "spec/dreamcatch/config_spec.rb",
+     "spec/dreamcatch/dav_response_spec.rb",
+     "spec/dreamcatch/dav_spec.rb",
+     "spec/dreamcatch/error_spec.rb",
+     "spec/dreamcatch/repo_spec.rb",
      "spec/spec_helper.rb"
   ]
 
@@ -47,16 +63,13 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_runtime_dependency(%q<grit>, [">= 0"])
-      s.add_runtime_dependency(%q<davclient>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_dependency(%q<grit>, [">= 0"])
-      s.add_dependency(%q<davclient>, [">= 0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
     s.add_dependency(%q<grit>, [">= 0"])
-    s.add_dependency(%q<davclient>, [">= 0"])
   end
 end
 
