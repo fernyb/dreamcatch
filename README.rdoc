@@ -43,6 +43,11 @@ A Ruby Gem to create new git repositories on dreamhost using WebDav
     repo.errors # => returns an array of errors if any where found after delete, delete_local, rename or save
 
 
+== Install
+
+    sudo gem install dreamcatch --source http://gemcutter.org
+    
+
 == Gem Dependencies
 
 * *grit* must also be available
