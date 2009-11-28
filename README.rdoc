@@ -27,15 +27,24 @@ A Ruby Gem to create new git repositories on dreamhost using WebDav
       :name => "repo.git"
     )
     repo.rename("new-name.git") # => returns true when rename was success
+    
 
+    repo = Dreamcatch::Repo.new(
+      :dir  => "~/some/dir",
+      :name => "repo.git"
+    )
+    repo.delete_local # => returns true when rename was success
+
+
+    repo = Dreamcatch::Repo.new(
+      :dir  => "~/some/dir",
+      :name => "repo.git"
+    )
+    repo.errors # => returns an array of errors if any where found after delete, delete_local, rename or save
 
 
 == Gem Dependencies
 
-* *fernyb_davclient* must be used and not davclient
-    
-    sudo gem install fernyb_davclient
-    
 * *grit* must also be available
     
     sudo gem install grit

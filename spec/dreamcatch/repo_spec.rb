@@ -70,16 +70,49 @@ describe "Dreamcatch::Repo" do
   end
   
   describe :rename do
-    it "should execute webdav.rename when exists" do
+    it "should execute webdav.rename when exists and new_name does not" do
       @repo.webdav.should_receive(:exists?).with("test.git").and_return true
-      @repo.webdav.should_receive(:rename).with("test.git", "new_name").and_return true
-      @repo.rename("new_name").should be_true
+      @repo.webdav.should_receive(:exists?).with("new_name.git").and_return false
+      
+      @repo.webdav.should_receive(:rename).with("test.git", "new_name.git").and_return true
+      @repo.rename("new_name.git").should be_true
     end
 
+    it "should not execute webdav.rename when exists and new_name already exists" do
+      @repo.webdav.should_receive(:exists?).with("test.git").and_return true
+      @repo.webdav.should_receive(:exists?).with("new_name.git").and_return true
+      
+      @repo.webdav.should_not_receive(:rename)
+      @repo.rename("new_name.git").should be_nil
+    end
+    
     it "should not execute webdav.rename when not exists" do
       @repo.webdav.should_receive(:exists?).with("test.git").and_return false
       @repo.webdav.should_not_receive(:rename).with("test.git", "new_name")
       @repo.rename("new_name").should be_nil
+    end    
+  end
+  
+  describe :delete_local do
+    it "should execute remove_dir from FileUtils and be true" do
+      @repo.stub!(:local_repo_exists?).and_return true
+      @repo.stub!(:local_repo).and_return "repo.git"
+      FileUtils.should_receive(:remove_dir).with("repo.git").and_return(0)
+      @repo.delete_local.should be_true
+    end
+    
+    it "should execute remove_dir from FileUtils and be nil" do
+      @repo.stub!(:local_repo_exists?).and_return true
+      @repo.stub!(:local_repo).and_return "repo.git"
+      FileUtils.should_receive(:remove_dir).with("repo.git").and_return(1)
+      @repo.delete_local.should be_nil
+    end
+
+
+    it "should be nil when local repo does not exists" do
+      @repo.stub!(:local_repo_exists?).and_return false
+      FileUtils.should_not_receive(:remove_dir)
+      @repo.delete_local.should be_nil
     end    
   end
   

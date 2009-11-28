@@ -22,13 +22,6 @@ describe Dreamcatch::Config do
       Dreamcatch::Config.remote_url = "repo.example.com/git"
       Dreamcatch::Config.remote_url.should == "http://repo.example.com/git"
     end
-    
-    it "returns url with username/password in url" do
-      Dreamcatch::Config.username = "username"
-      Dreamcatch::Config.password = "password"
-      Dreamcatch::Config.remote_url = "repo.example.com/git"
-      Dreamcatch::Config.remote_url.should == "http://username:password@repo.example.com/git"  
-    end
   end
   
   describe :credentials do

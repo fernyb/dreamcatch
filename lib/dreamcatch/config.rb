@@ -6,11 +6,7 @@ module Dreamcatch
       attr_accessor :password
       
       def remote_url
-        if !@username.nil? && !@password.nil?
-          "http://#{@username}:#{@password}@#{@remote_url}"
-        else
-          "http://#{@remote_url}"
-        end  
+        "http://#{@remote_url}"  
       end
       
       def credentials

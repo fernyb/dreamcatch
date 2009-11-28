@@ -25,7 +25,12 @@ module Dreamcatch
     
     def delete_local
       if local_repo_exists?
-        FileUtils.remove_dir(local_repo) == 0 ? true : (self.add_error(Dreamcatch::Error.new(%Q{#{local_repo} could not be removed})))
+        if FileUtils.remove_dir(local_repo) == 0
+          true
+        else
+          self.add_error(Dreamcatch::Error.new(%Q{#{local_repo} could not be removed}))
+          nil
+        end
       else
         self.add_error Dreamcatch::Error.new(%Q{#{local_repo} does not exist locally})
         nil
@@ -34,7 +39,12 @@ module Dreamcatch
     
     def rename(new_name)
       if webdav.exists?("#{@name}")
-        webdav.rename(@name, new_name)
+        if !webdav.exists?("#{new_name}")
+          webdav.rename(@name, new_name)
+        else
+          self.add_error Dreamcatch::Error.new(%Q{#{new_name} already exists})
+          nil
+        end
       else
         self.add_error Dreamcatch::Error.new(%Q{#{@name} does not exist})
         nil
