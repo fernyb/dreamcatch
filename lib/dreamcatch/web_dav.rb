@@ -24,13 +24,13 @@ module Dreamcatch
       unless webdav.exists?("#{remote_url}/#{new_name}")
         webdav.rename("#{remote_url}/#{name}", "#{remote_url}/#{new_name}")
       else
-        @notifier.errors << Dreamcatch::Error.new(%Q{#{new_name} does not exists})
+        @notifier.add_error Dreamcatch::Error.new(%Q{#{new_name} does not exists})
       end
     end
     
     def put(local_dir, save_name)
       if exists?("#{save_name}")
-        @notifier.errors << Dreamcatch::Error.new(%Q{#{save_name} already exists})
+        @notifier.add_error Dreamcatch::Error.new(%Q{#{save_name} already exists})
         return nil
       elsif File.directory?("#{local_dir}/#{save_name}")
         recursive_put(local_dir, save_name)

@@ -28,12 +28,12 @@ module Dreamcatch
       puts "* DELETE: #{resp.status_code} #{resp.status}" if $DEBUG
       
       if resp.status_code == 401
-        @notifier.errors << Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
+        @notifier.add_error Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
         false
       elsif resp.status_code == 204
         resp
       else
-        @notifier.errors << Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
+        @notifier.add_error Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
         false
       end
     end
@@ -50,7 +50,7 @@ module Dreamcatch
       if resp.status_code == 201
         resp
       else
-        @notifier.errors << Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
+        @notifier.add_error Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
         false
       end  
     end
@@ -64,7 +64,7 @@ module Dreamcatch
       if resp.status_code == 201
         resp
       else
-        @notifier.errors << Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
+        @notifier.add_error Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
         false
       end
     end
@@ -79,7 +79,7 @@ module Dreamcatch
       if resp.status_code == 201
         resp
       else
-        @notifier.errors << Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
+        @notifier.add_error Dreamcatch::Error.new("#{resp.status_code} #{resp.status}")
         false
       end
     end

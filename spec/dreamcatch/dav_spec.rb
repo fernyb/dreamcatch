@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Dreamcatch::DAV" do
   before :each do
     @dav = Dreamcatch::DAV.new
-    @dav.notifier = mock("Notifier", :errors => [])  
+    @dav.notifier = mock("Notifier", :errors => [], :add_error => nil)  
   end
   
   describe :headers_and_response_from_response do

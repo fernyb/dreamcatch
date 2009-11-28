@@ -18,7 +18,7 @@ module Dreamcatch
       if webdav.exists?("#{@name}")
         webdav.delete("#{@name}")
       else
-        @errors << Dreamcatch::Error.new(%Q{#{@name} does not exists})
+        self.add_error Dreamcatch::Error.new(%Q{#{@name} does not exists})
         nil
       end
     end
@@ -30,6 +30,9 @@ module Dreamcatch
     def rename(new_name)
       if webdav.exists?("#{@name}")
         webdav.rename(@name, new_name)
+      else
+        self.add_error Dreamcatch::Error.new(%Q{#{@name} does not exists})
+        nil
       end
     end
     
@@ -65,6 +68,7 @@ module Dreamcatch
       @errors ||= []
       @errors << message if message.kind_of?(Dreamcatch::Error)
     end
+    alias_method :add_error, :errors=
   end
 
 end

@@ -47,7 +47,18 @@ describe "Dreamcatch::Repo" do
       @repo.errors.should be_kind_of(Array)
     end
     
-    it "should have errors"
+    it "should have errors" do
+      @repo.webdav.stub!(:exists?).and_return false
+      @repo.rename("new_name.git")
+      @repo.errors.size.should == 1
+    end
+    
+    it "should have errors when trying to delete" do
+      @repo.instance_variable_set(:@errors, [])
+      @repo.stub!(:exists?).and_return false
+      @repo.delete
+      @repo.errors.size.should == 1
+    end
   end
   
   describe :upload_to_webdav do
